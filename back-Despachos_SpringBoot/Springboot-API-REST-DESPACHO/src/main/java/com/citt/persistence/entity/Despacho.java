@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 
 @Entity
@@ -18,6 +20,7 @@ import java.time.LocalDate;
 public class Despacho {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)  // ← ignorar en POST y PUT
     private Long idDespacho;
     //@NotNull(message = "Fecha de despacho es obligatoria")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)  // Especifica el formato de fecha
