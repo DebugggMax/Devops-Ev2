@@ -6,8 +6,11 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# ETAPA 2: Servir con un servidor liviano (Nginx)
-FROM nginx:alpine
+# ETAPA 2: Servir con Nginx Seguro (Mínimo Privilegio / No-Root)
+FROM nginxinc/nginx-unprivileged:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]    
+
+# Exponemos el puerto 8080 (No requiere permisos de Root)
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]
