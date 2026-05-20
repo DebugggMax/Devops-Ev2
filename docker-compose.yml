@@ -1,0 +1,75 @@
+services:
+  # El Orquestador / Proxy Inverso
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend-despacho
+      - backend-ventas
+    networks:
+      - red-monorepo
+
+  # 3. El Frontend (React/Vite)
+  frontend:
+    build:
+      context: ./front_despacho
+      dockerfile: Dockerfile
+    container_name: front-despacho
+    networks:
+      - red-monorepo
+
+  # Base de Datos local (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: dbevaluacion
+      MYSQL_USER: devops_user
+      MYSQL_PASSWORD: devops_password
+      MYSQL_ROOT_PASSWORD: root_password_seguro
+    networks:
+      - red-monorepo
+
+  # 1. Backend Despachos (Ruta exacta apuntando a la subcarpeta del Dockerfile)
+  backend-despacho:
+    build:
+      context: ./back-Despachos_SpringBoot/SpringBoot-API-REST-DESPACHO
+      dockerfile: Dockerfile
+    container_name: back-despacho
+    environment:
+      - DB_ENDPOINT=db
+      - DB_PORT=3306
+      - DB_NAME=dbevaluacion
+      - DB_USERNAME=devops_user
+      - DB_PASSWORD=devops_password
+    depends_on:
+      - db
+    networks:
+      - red-monorepo
+
+  # 2. Backend Ventas (Ruta exacta apuntando a la subcarpeta del Dockerfile)
+  backend-ventas:
+    build:
+      context: ./back-Ventas_SpringBoot/Springboot-API-REST
+      dockerfile: Dockerfile
+    container_name: back-ventas
+    environment:
+      - DB_ENDPOINT=db
+      - DB_PORT=3306
+      - DB_NAME=dbevaluacion
+      - DB_USERNAME=devops_user
+      - DB_PASSWORD=devops_password
+    depends_on:
+      - db
+    networks:
+      - red-monorepo
+
+networks:
+  red-monorepo:
+    driver: bridge

@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SpringbootApiRestApplication<Springboot-API-REST>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.citt.SpringbootApiRestApplication",
+            "projectName": "Springboot-API-REST",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-SpringbootApiRestDespachoApplication<Springboot-API-REST-DESPACHO>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.citt.SpringbootApiRestDespachoApplication",
+            "projectName": "Springboot-API-REST-DESPACHO",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
