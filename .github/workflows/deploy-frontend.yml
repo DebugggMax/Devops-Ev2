@@ -65,7 +65,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            cd ~/app
+            cd ~/Devops-Ev2
             docker compose pull frontend
             docker compose up -d --no-deps frontend nginx-proxy
             docker image prune -f

@@ -55,7 +55,7 @@ jobs:
       - name: Build & Push imagen
         uses: docker/build-push-action@v5
         with:
-          context: ./back-Despachos_SpringBoot/SpringBoot-API-REST-DESPACHO
+          context: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
           dockerfile: ./back-Despachos_SpringBoot/SpringBoot-API-REST-DESPACHO/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -74,7 +74,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            cd ~/app
+            cd ~/Devops-Ev2
             docker compose pull backend-despacho
             docker compose up -d --no-deps backend-despacho
             docker image prune -f
