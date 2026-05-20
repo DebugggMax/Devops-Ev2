@@ -1,5 +1,5 @@
 services:
-  # El Orquestador / Proxy Inverso
+  # El Orquestador / Proxy Inverso (Único expuesto al puerto 80)
   nginx-proxy:
     image: nginx:alpine
     container_name: nginx-proxy
@@ -14,16 +14,19 @@ services:
     networks:
       - red-monorepo
 
-  # 3. El Frontend (React/Vite)
+  # FRONTEND (React / Vite - Configuración limpia de producción)
   frontend:
     build:
       context: ./front_despacho
       dockerfile: Dockerfile
-    container_name: front-despacho
+      args:
+        VITE_API_DESPACHOS: http://localhost/api/v1/despachos
+        VITE_API_VENTAS: http://localhost/api/v1/ventas
+    container_name: front-despacho  # ← mismo nivel que build
     networks:
       - red-monorepo
 
-  # Base de Datos local (MySQL)
+  # BASE DE DATOS (MySQL 8.0)
   db:
     image: mysql:8.0
     container_name: mysql-db
@@ -33,10 +36,15 @@ services:
       MYSQL_USER: devops_user
       MYSQL_PASSWORD: devops_password
       MYSQL_ROOT_PASSWORD: root_password_seguro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "devops_user", "-pdevops_password"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - red-monorepo
 
-  # 1. Backend Despachos (Ruta exacta apuntando a la subcarpeta del Dockerfile)
+  # BACKEND DESPACHOS (Spring Boot en 8081)
   backend-despacho:
     build:
       context: ./back-Despachos_SpringBoot/SpringBoot-API-REST-DESPACHO
@@ -49,11 +57,12 @@ services:
       - DB_USERNAME=devops_user
       - DB_PASSWORD=devops_password
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - red-monorepo
 
-  # 2. Backend Ventas (Ruta exacta apuntando a la subcarpeta del Dockerfile)
+  # BACKEND VENTAS (Spring Boot en 8082)
   backend-ventas:
     build:
       context: ./back-Ventas_SpringBoot/Springboot-API-REST
@@ -66,7 +75,8 @@ services:
       - DB_USERNAME=devops_user
       - DB_PASSWORD=devops_password
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - red-monorepo
 
