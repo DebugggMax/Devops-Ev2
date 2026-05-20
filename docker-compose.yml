@@ -77,9 +77,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
+        volumes:
+        - mysql_data:/var/lib/mysql
     networks:
       - red-monorepo
-
 networks:
   red-monorepo:
     driver: bridge
