@@ -1,4 +1,4 @@
-# 🚀 DevOps EP2 — Monorepo Dockerizado + CI/CD + AWS
+# DevOps EP2 — Monorepo Dockerizado + CI/CD + AWS
 
 Sistema de gestión de despachos para **Innovatech Chile**, compuesto por 3 microservicios completamente dockerizados, orquestados con Nginx como proxy inverso, desplegados en AWS EC2 mediante pipelines CI/CD automatizados con GitHub Actions.
 
