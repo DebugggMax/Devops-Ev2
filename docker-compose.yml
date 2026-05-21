@@ -47,7 +47,7 @@ services:
   # BACKEND DESPACHOS (Spring Boot en 8081)
   backend-despacho:
     build:
-      context: ./back-Despachos_SpringBoot/SpringBoot-API-REST-DESPACHO
+      context: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
       dockerfile: Dockerfile
     container_name: back-despacho
     environment:
@@ -77,7 +77,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-        
     networks:
       - red-monorepo
 networks:
