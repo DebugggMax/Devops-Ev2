@@ -9,20 +9,13 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - frontend
-      - backend-despacho
-      - backend-ventas
     networks:
       - red-monorepo
 
-  # FRONTEND (React / Vite - Configuración limpia de producción)
+  # FRONTEND (React / Vite)
   frontend:
-    build:
-      context: ./front_despacho
-      dockerfile: Dockerfile
-      args:
-        VITE_API_DESPACHOS: http://localhost/api/v1/despachos
-        VITE_API_VENTAS: http://localhost/api/v1/ventas
-    container_name: front-despacho  # ← mismo nivel que build
+    image: ghcr.io/debugggmax/frontend-despacho-v2:latest
+    container_name: front-despacho
     networks:
       - red-monorepo
 
@@ -41,44 +34,40 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    volumes:
+      - mysql_data:/var/lib/mysql
     networks:
       - red-monorepo
 
   # BACKEND DESPACHOS (Spring Boot en 8081)
   backend-despacho:
-    build:
-      context: ./back-Despachos_SpringBoot/Springboot-API-REST-DESPACHO
-      dockerfile: Dockerfile
+    image: ghcr.io/debugggmax/backend-despacho:latest
     container_name: back-despacho
     environment:
-      - DB_ENDPOINT=db
+      - DB_ENDPOINT=10.0.4.48
       - DB_PORT=3306
       - DB_NAME=dbevaluacion
       - DB_USERNAME=devops_user
       - DB_PASSWORD=devops_password
-    depends_on:
-      db:
-        condition: service_healthy
     networks:
       - red-monorepo
 
   # BACKEND VENTAS (Spring Boot en 8082)
   backend-ventas:
-    build:
-      context: ./back-Ventas_SpringBoot/Springboot-API-REST
-      dockerfile: Dockerfile
+    image: ghcr.io/debugggmax/backend-ventas:latest
     container_name: back-ventas
     environment:
-      - DB_ENDPOINT=db
+      - DB_ENDPOINT=10.0.4.48
       - DB_PORT=3306
       - DB_NAME=dbevaluacion
       - DB_USERNAME=devops_user
       - DB_PASSWORD=devops_password
-    depends_on:
-      db:
-        condition: service_healthy
     networks:
       - red-monorepo
+
+volumes:
+  mysql_data:
+
 networks:
   red-monorepo:
     driver: bridge
