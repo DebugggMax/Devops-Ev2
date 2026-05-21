@@ -362,6 +362,6 @@ docker compose up -d
 
 ## Autor
 
-**DebugggMax**  
+**Maximiliano Olguin**  
 ISY1101 — Introducción a Herramientas DevOps  
 DuocUC — Evaluación Parcial N°2
